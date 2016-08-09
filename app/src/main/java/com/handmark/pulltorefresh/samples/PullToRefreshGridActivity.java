@@ -38,10 +38,11 @@ public final class PullToRefreshGridActivity extends Activity {
 
     static final int MENU_SET_MODE = 0;
 
-    private LinkedList<String>    mListItems;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView              mGridView;
-    private ArrayAdapter<String>  mAdapter;
+
+    private LinkedList<String>   mListItems;
+    private ArrayAdapter<String> mAdapter;
     private String[] mStrings =
             {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi", "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu",
                     "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler"};

@@ -57,6 +57,19 @@ interface IPullToRefresh<T extends View> {
     boolean getFilterTouchEvents();
 
     /**
+     * Set the Touch Events to be filtered or not. If set to true, then the View
+     * will only use touch events where the difference in the Y-axis is greater
+     * than the difference in the X-axis. This means that the View will not
+     * interfere when it is used in a horizontal scrolling View (such as a
+     * ViewPager), but will restrict which types of finger scrolls will trigger
+     * the View.
+     *
+     * @param filterEvents - true if you want to filter Touch Events. Default is
+     *                     true.
+     */
+    void setFilterTouchEvents(boolean filterEvents);
+
+    /**
      * Returns a proxy object which allows you to call methods on all of the
      * LoadingLayouts (the Views which show when Pulling/Refreshing).
      * <p/>
@@ -94,6 +107,13 @@ interface IPullToRefresh<T extends View> {
     Mode getMode();
 
     /**
+     * Set the mode of Pull-to-Refresh that this view will use.
+     *
+     * @param mode - Mode to set the View to
+     */
+    void setMode(Mode mode);
+
+    /**
      * Get the Wrapped Refreshable View. Anything returned here has already been
      * added to the content view.
      *
@@ -108,6 +128,14 @@ interface IPullToRefresh<T extends View> {
      * @return - true if the Refreshing View will be show
      */
     boolean getShowViewWhileRefreshing();
+
+    /**
+     * A mutator to enable/disable whether the 'Refreshing' View should be
+     * automatically shown when refreshing.
+     *
+     * @param showView
+     */
+    void setShowViewWhileRefreshing(boolean showView);
 
     /**
      * @return - The state that the View is currently in.
@@ -132,11 +160,29 @@ interface IPullToRefresh<T extends View> {
     boolean isPullToRefreshOverScrollEnabled();
 
     /**
+     * Sets whether Overscroll support is enabled. This is different to
+     * Android's standard Overscroll support (the edge-glow). This setting only
+     * takes effect when running on device with Android v2.3 or greater.
+     *
+     * @param enabled - true if you want Overscroll enabled
+     */
+    void setPullToRefreshOverScrollEnabled(boolean enabled);
+
+    /**
      * Returns whether the Widget is currently in the Refreshing mState
      *
      * @return true if the Widget is currently refreshing
      */
     boolean isRefreshing();
+
+    /**
+     * Sets the Widget to be in the refresh state. The UI will be updated to
+     * show the 'Refreshing' view.
+     *
+     * @param doScroll - true if you want to force a scroll to the Refreshing
+     *                 view.
+     */
+    void setRefreshing(boolean doScroll);
 
     /**
      * Returns whether the widget has enabled scrolling on the Refreshable View
@@ -147,30 +193,19 @@ interface IPullToRefresh<T extends View> {
     boolean isScrollingWhileRefreshingEnabled();
 
     /**
+     * By default the Widget disables scrolling on the Refreshable View while
+     * refreshing. This method can change this behaviour.
+     *
+     * @param scrollingWhileRefreshingEnabled - true if you want to enable
+     *                                        scrolling while refreshing
+     */
+    void setScrollingWhileRefreshingEnabled(boolean scrollingWhileRefreshingEnabled);
+
+    /**
      * Mark the current Refresh as complete. Will Reset the UI and hide the
      * Refreshing View
      */
     void onRefreshComplete();
-
-    /**
-     * Set the Touch Events to be filtered or not. If set to true, then the View
-     * will only use touch events where the difference in the Y-axis is greater
-     * than the difference in the X-axis. This means that the View will not
-     * interfere when it is used in a horizontal scrolling View (such as a
-     * ViewPager), but will restrict which types of finger scrolls will trigger
-     * the View.
-     *
-     * @param filterEvents - true if you want to filter Touch Events. Default is
-     *                     true.
-     */
-    void setFilterTouchEvents(boolean filterEvents);
-
-    /**
-     * Set the mode of Pull-to-Refresh that this view will use.
-     *
-     * @param mode - Mode to set the View to
-     */
-    void setMode(Mode mode);
 
     /**
      * Set OnPullEventListener for the Widget
@@ -195,28 +230,10 @@ interface IPullToRefresh<T extends View> {
     void setOnRefreshListener(OnRefreshListener2<T> listener);
 
     /**
-     * Sets whether Overscroll support is enabled. This is different to
-     * Android's standard Overscroll support (the edge-glow). This setting only
-     * takes effect when running on device with Android v2.3 or greater.
-     *
-     * @param enabled - true if you want Overscroll enabled
-     */
-    void setPullToRefreshOverScrollEnabled(boolean enabled);
-
-    /**
      * Sets the Widget to be in the refresh state. The UI will be updated to
      * show the 'Refreshing' view, and be scrolled to show such.
      */
     void setRefreshing();
-
-    /**
-     * Sets the Widget to be in the refresh state. The UI will be updated to
-     * show the 'Refreshing' view.
-     *
-     * @param doScroll - true if you want to force a scroll to the Refreshing
-     *                 view.
-     */
-    void setRefreshing(boolean doScroll);
 
     /**
      * Sets the Animation Interpolator that is used for animated scrolling.
@@ -225,22 +242,5 @@ interface IPullToRefresh<T extends View> {
      * @param interpolator - Interpolator to use
      */
     void setScrollAnimationInterpolator(Interpolator interpolator);
-
-    /**
-     * By default the Widget disables scrolling on the Refreshable View while
-     * refreshing. This method can change this behaviour.
-     *
-     * @param scrollingWhileRefreshingEnabled - true if you want to enable
-     *                                        scrolling while refreshing
-     */
-    void setScrollingWhileRefreshingEnabled(boolean scrollingWhileRefreshingEnabled);
-
-    /**
-     * A mutator to enable/disable whether the 'Refreshing' View should be
-     * automatically shown when refreshing.
-     *
-     * @param showView
-     */
-    void setShowViewWhileRefreshing(boolean showView);
 
 }

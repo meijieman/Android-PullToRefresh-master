@@ -1,7 +1,5 @@
 package com.handmark.pulltorefresh.samples;
 
-import java.util.Arrays;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -20,91 +18,90 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
+import java.util.Arrays;
+
 public class PullToRefreshListInViewPagerActivity extends Activity implements OnRefreshListener<ListView> {
 
-	private static final String[] STRINGS = { "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance",
-			"Ackawi", "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre",
-			"Allgauer Emmentaler", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
-			"Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre",
-			"Allgauer Emmentaler" };
+    private static final String[] STRINGS =
+            {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi", "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu",
+                    "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
+                    "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler"};
 
-	private ViewPager mViewPager;
+    private ViewPager mViewPager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ptr_list_in_vp);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ptr_list_in_vp);
 
-		mViewPager = (ViewPager) findViewById(R.id.vp_list);
-		mViewPager.setAdapter(new ListViewPagerAdapter());
-	}
+        mViewPager = (ViewPager)findViewById(R.id.vp_list);
+        mViewPager.setAdapter(new ListViewPagerAdapter());
+    }
 
-	private class ListViewPagerAdapter extends PagerAdapter {
+    @Override
+    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+        new GetDataTask(refreshView).execute();
+    }
 
-		@Override
-		public View instantiateItem(ViewGroup container, int position) {
-			Context context = container.getContext();
+    private static class GetDataTask extends AsyncTask<Void, Void, Void> {
 
-			PullToRefreshListView plv = (PullToRefreshListView) LayoutInflater.from(context).inflate(
-					R.layout.layout_listview_in_viewpager, container, false);
+        PullToRefreshBase<?> mRefreshedView;
 
-			ListAdapter adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,
-					Arrays.asList(STRINGS));
-			plv.setAdapter(adapter);
+        public GetDataTask(PullToRefreshBase<?> refreshedView) {
+            mRefreshedView = refreshedView;
+        }
 
-			plv.setOnRefreshListener(PullToRefreshListInViewPagerActivity.this);
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Simulates a background job.
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+            }
+            return null;
+        }
 
-			// Now just add ListView to ViewPager and return it
-			container.addView(plv, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        @Override
+        protected void onPostExecute(Void result) {
+            mRefreshedView.onRefreshComplete();
+            super.onPostExecute(result);
+        }
+    }
 
-			return plv;
-		}
+    private class ListViewPagerAdapter extends PagerAdapter {
 
-		@Override
-		public void destroyItem(ViewGroup container, int position, Object object) {
-			container.removeView((View) object);
-		}
+        @Override
+        public int getCount() {
+            return 3;
+        }
 
-		@Override
-		public boolean isViewFromObject(View view, Object object) {
-			return view == object;
-		}
+        @Override
+        public View instantiateItem(ViewGroup container, int position) {
+            Context context = container.getContext();
 
-		@Override
-		public int getCount() {
-			return 3;
-		}
+            PullToRefreshListView plv = (PullToRefreshListView)LayoutInflater.from(context).inflate(R.layout.layout_listview_in_viewpager, container, false);
 
-	}
+            ListAdapter adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, Arrays.asList(STRINGS));
+            plv.setAdapter(adapter);
 
-	@Override
-	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		new GetDataTask(refreshView).execute();
-	}
+            plv.setOnRefreshListener(PullToRefreshListInViewPagerActivity.this);
 
-	private static class GetDataTask extends AsyncTask<Void, Void, Void> {
+            // Now just add ListView to ViewPager and return it
+            container.addView(plv, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-		PullToRefreshBase<?> mRefreshedView;
+            return plv;
+        }
 
-		public GetDataTask(PullToRefreshBase<?> refreshedView) {
-			mRefreshedView = refreshedView;
-		}
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View)object);
+        }
 
-		@Override
-		protected Void doInBackground(Void... params) {
-			// Simulates a background job.
-			try {
-				Thread.sleep(4000);
-			} catch (InterruptedException e) {
-			}
-			return null;
-		}
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
 
-		@Override
-		protected void onPostExecute(Void result) {
-			mRefreshedView.onRefreshComplete();
-			super.onPostExecute(result);
-		}
-	}
+    }
 
 }

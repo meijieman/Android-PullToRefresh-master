@@ -50,6 +50,10 @@ public final class PullToRefreshListActivity extends ListActivity {
     private LinkedList<String>    mListItems;
     private PullToRefreshListView mPullRefreshListView;
     private ArrayAdapter<String>  mAdapter;
+    private String[] mStrings =
+            {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi", "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu",
+                    "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
+                    "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,31 +110,6 @@ public final class PullToRefreshListActivity extends ListActivity {
         actualListView.setAdapter(mAdapter);
     }
 
-    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
-
-        @Override
-        protected String[] doInBackground(Void... params) {
-            // Simulates a background job.
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return mStrings;
-        }
-
-        @Override
-        protected void onPostExecute(String[] result) {
-            mListItems.addFirst("Added after refresh...");
-            mAdapter.notifyDataSetChanged();
-
-            // Call onRefreshComplete when the list has been refreshed.
-            mPullRefreshListView.onRefreshComplete();
-
-            super.onPostExecute(result);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, MENU_MANUAL_REFRESH, 0, "Manual Refresh");
@@ -139,19 +118,6 @@ public final class PullToRefreshListActivity extends ListActivity {
         menu.add(0, MENU_SET_MODE, 0, mPullRefreshListView.getMode() == Mode.BOTH ? "Change to MODE_PULL_DOWN" : "Change to MODE_PULL_BOTH");
         menu.add(0, MENU_DEMO, 0, "Demo");
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
-
-        menu.setHeaderTitle("Item: " + getListView().getItemAtPosition(info.position));
-        menu.add("Item 1");
-        menu.add("Item 2");
-        menu.add("Item 3");
-        menu.add("Item 4");
-
-        super.onCreateContextMenu(menu, v, menuInfo);
     }
 
     @Override
@@ -188,8 +154,41 @@ public final class PullToRefreshListActivity extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private String[] mStrings =
-            {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi", "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu",
-                    "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
-                    "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale", "Aisy Cendre", "Allgauer Emmentaler"};
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
+
+        menu.setHeaderTitle("Item: " + getListView().getItemAtPosition(info.position));
+        menu.add("Item 1");
+        menu.add("Item 2");
+        menu.add("Item 3");
+        menu.add("Item 4");
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(Void... params) {
+            // Simulates a background job.
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return mStrings;
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            mListItems.addFirst("Added after refresh...");
+            mAdapter.notifyDataSetChanged();
+
+            // Call onRefreshComplete when the list has been refreshed.
+            mPullRefreshListView.onRefreshComplete();
+
+            super.onPostExecute(result);
+        }
+    }
 }
