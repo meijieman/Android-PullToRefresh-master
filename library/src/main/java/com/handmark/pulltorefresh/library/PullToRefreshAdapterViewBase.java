@@ -472,4 +472,12 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 			}
 		}
 	}
+
+	public boolean isHeaderShown() {
+		return getHeaderLayout().isShown();
+	}
+
+	public boolean isFooterShown() {
+		return getFooterLayout().isShown();
+	}
 }
